@@ -5,6 +5,7 @@ export default function MisReservas() {
   const [dato, setDato] = useState("");
   const [reservas, setReservas] = useState([]);
   const [buscando, setBuscando] = useState(false);
+  const [cancelar, setCancelar] = useState(false);
 
   const buscarReservas = async (e) => {
     e.preventDefault();
@@ -28,6 +29,24 @@ export default function MisReservas() {
       setBuscando(false);
     }
   };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("¿Estás seguro de que quieres cancelar esta reserva?")) {
+      return;
+    }
+
+    try{
+      const del = await axios.delete(`http://localhost:3000/api/reservas/${id}`);
+      if (del.status === 200 || del.status === 204){
+        setReservas(reservas.filter((reserva) => reserva.id !== id));
+        alert("✅ Reserva cancelada correctamente.");
+      }
+    } catch (error){
+      console.error("Error al cancelar la reserva:", error);
+      alert("❌ Hubo un error al cancelar la reserva.");
+    }
+
+  }
 
   return (
     <div className="container mt-4">
@@ -55,6 +74,14 @@ export default function MisReservas() {
           <p><strong>Fecha:</strong> {reserva.turno?.fecha}</p>
           <p><strong>Hora:</strong> {reserva.turno?.hora}</p>
           <p><strong>Estado:</strong> {reserva.estado}</p>
+          {reserva.estado === "confirmada" && (
+            <button
+              className="btn btn-danger"
+              onClick={() => handleDelete(reserva.id)}
+            >
+              Cancelar Reserva
+            </button>
+          )}
         </div>
       ))}
     </div>

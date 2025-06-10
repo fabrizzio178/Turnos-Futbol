@@ -68,6 +68,7 @@ app.use(errorHandler);
     await Reserva.bulkCreate([
       { clienteId: clientes[0].id, turnoId: turnos[0].id, estado: "confirmada" },
       { clienteId: clientes[1].id, turnoId: turnos[1].id, estado: "pendiente" },
+
     ]);
 
     console.log("Datos hardcodeados precargados");
